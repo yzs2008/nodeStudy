@@ -2,7 +2,7 @@
     "name": "payment-router",
     "version": "1.0.0",
     "description": "payment router",
-    "main": "index.js",
+    "main": "app.js",
     "keywords": [
         "router",
         "collect",
