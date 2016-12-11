@@ -1,0 +1,40 @@
+{
+    "thisServer": {
+        "name": "payment-router",
+        "host": "0.0.0.0"
+    },
+    "mysqlConfig": {
+        "connectionLimit": 100,
+        "host": "localhost",
+        "user": "root",
+        "password": "123456",
+        "database": "local_router"
+    },
+    "http": {
+        "enable": true,
+        "port": 8086
+    },
+    "https": {
+        "enable": false,
+        "port": 9086,
+        "key": "cert/privatekey.pem",
+        "certificate": "cert/certificate.pem"
+    },
+    "bodyParser": {
+        "jsonOption": {
+            "limit": "10mb"
+        },
+        "urlencodedOption": {
+            "extended": true
+        }
+    },
+    "accessLog": {
+        "format": ":req[x-forwarded-for] - :remote-user [:localTime] \":method :url HTTP/:http-version\" :status :res[content-length] \":referrer\" \":user-agent\" :response-time ms",
+        "fileConfig": {
+            "filename": "./log/access-%DATE%.log",
+            "frequency": "daily",
+            "verbose": false,
+            "date_format": "YYYY-MM-DD"
+        }
+    }
+}

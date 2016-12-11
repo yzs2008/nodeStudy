@@ -1,0 +1,28 @@
+{
+    "name": "payment-router",
+    "version": "1.0.0",
+    "description": "payment router",
+    "main": "index.js",
+    "keywords": [
+        "router",
+        "collect",
+        "sign",
+        "withdraw"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yzs2008/nodeStudy.git"
+    },
+    "author": "kaidi",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/yzs2008/nodeStudy/issues"
+    },
+    "homepage": "https://github.com/yzs2008/nodeStudy#readme",
+    "dependencies": {
+        "express": "4.14.0",
+        "q": "1.4.1",
+        "log4js": "1.0.1",
+        "mysql":"2.12.0"
+    }
+}
