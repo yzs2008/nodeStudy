@@ -1,5 +1,5 @@
 {
-    "thisServer": {
+    "server": {
         "name": "payment-router",
         "host": "0.0.0.0"
     },
