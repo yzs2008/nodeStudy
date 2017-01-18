@@ -8,7 +8,7 @@ var ruleEngin = require('./function/ruleLoader');
 
 app.get('/', function (req, res) {
     logger.info('accept request.');
-    res.send('Hello World!' + config.thisServer);
+    res.send('Hello World!' + config.server.name);
     var rules = ruleEngin();
     logger.info("hello rules");
     var result = rules['queryChannelRule']();
