@@ -1,10 +1,10 @@
 var fs = require('fs');
 var path = require('path');
-var config = require('../common/config');
+var routerConsts = require('../common/consts/routerConsts');
 
 var ruleCollection = {
-    pre: {},
-    post: {},
+    precondition: {},
+    postcondition: {},
     priority: {}
 };
 
@@ -14,27 +14,28 @@ module.exports = {
      * 先从缓存中加载， 若找不到，则根据type到具体的目录下加载，如果找不到，抛出规则不存在异常
      * 若找到，则加入缓存
      * @param ruleName
-     * @param type post|pre|priority
+     * @param type postcondition|precondition|priority
      * @returns {*}
      */
-    load: function (ruleName, type) {
-        var rule = ruleCollection[type][ruleName];
+    load: function (ruleName, ruleType) {
+        var rule = ruleCollection[ruleType][ruleName];
         if (rule == null || rule == undefined) {
-            var newRule = loadRule(ruleName, type);
+            var newRule = loadRule(ruleName, ruleType);
             if (newRule == null) {
-                return new Error("undefinedRuleError" + ruleName);
+                return new Error("undefinedRuleError:" + ruleName);
             }
             rule = newRule;
-            ruleCollection[type][ruleName] = rule;
+            ruleCollection[ruleType][ruleName] = rule;
         }
         return rule;
 
     },
     init: function () {
         //加载所所有的规则
-        loadFiles('pre');
-        loadFiles('post');
-        loadFiles('priority');
+        var ruleType = routerConsts.ruleType;
+        Object.keys(ruleType).forEach(function (key) {
+            loadRuleCollection(ruleType[key]);
+        })
     },
     reload: function () {
         //重新加载所有规则
@@ -42,27 +43,19 @@ module.exports = {
     ruleCollections: ruleCollection
 
 }
-var loadFiles = function (type) {
-    var typePath = '';
-    if (type == 'pre') {
-        typePath = 'precondition';
-    } else if (type == 'post') {
-        typePath = 'postcondition';
-    } else if (type == 'priority') {
-        typePath = 'priority';
-    }
-    var dir = __dirname + '/' + config.rulesPath + '/' + typePath;
-    fs.readdirSync(dir).forEach(function (fileName) {
+var loadRuleCollection = function (rType) {
+    var rulesPath = __dirname + '/rules/' + rType;
+    fs.readdirSync(rulesPath).forEach(function (fileName) {
         if (!/\.js$/.test(fileName)) {
             return;
         }
-        var name = path.basename(fileName, '.js');
-        var _load = loadFile('./' + config.rulesPath + '/' + typePath + '/' + fileName);
+        var ruleName = path.basename(fileName, '.js');
+        var filePath = './rules/' + rType + '/' + fileName;
+        var rule = loadRule(filePath);
 
-        ruleCollection[type][name] = _load;
+        ruleCollection[rType][ruleName] = rule;
     });
-
 }
-var loadFile = function (filePath) {
+var loadRule = function (filePath) {
     return require(filePath);
 };

@@ -1,4 +1,4 @@
-var dao = require('./mysql');
+var dao = require('./mysqlService');
 var Q = require('q');
 
 module.exports = {

@@ -2,10 +2,10 @@ var express = require('express')
 var app = express()
 var logger = require('./common/logger');
 var config = require('./common/config');
-var db = require('./common/service/mysql');
+var db = require('./common/service/mysqlService');
 var Q = require('q');
-//var ruleEngin = require('./function/ruleLoader');
-var ruleEngine = require('./function/ruleEngine');
+var ruleEngine = require('./function/ruleLoader');
+//var ruleEngine = require('./function/ruleEngine');
 var channelService = require('./common/service/channelService');
 
 app.get('/', function (req, res) {

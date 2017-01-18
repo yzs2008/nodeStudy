@@ -10,7 +10,6 @@
         "password": "123456",
         "database": "local_router"
     },
-    "rulesPath":"rules",
     "http": {
         "enable": true,
         "port": 8086
