@@ -1,21 +1,21 @@
 var fs = require('fs');
 var path = require('path');
-var mysqlClient = require('../common/service/mysql');
-var logger = require('../common/logger');
+var config = require('../common/config');
 
-var loadProductRule = function (accessor) {
-    logger.info("start to load rule collection by accessor.");
-    
-    var promise = mysqlClient.queryList('select * from router_product_rule_info where product_no = ?', [accessor]);
-    promise.then(function (data) {
-        for(var i = 0; i< data.length; i++){
-            logger.info(data[i]);
-        }
-    }).fail(function (err) {
-        logger.error(err);
-    });
-};
 
-module.exports = function () {
-    loadProductRule('default','cop','pub');
+module.exports = {
+    /*
+      根据accessor，type 查找缓存中是否有对应的规则链表，有，使用，无，解析并加入缓存
+     */
+    assemble: function (accessor, type) {
+        rules = {}
+        return rules;
+    }
 }
+
+var load = function (path, name) {
+    if (name) {
+        return require(path + name);
+    }
+    return require(path);
+};

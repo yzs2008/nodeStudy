@@ -10,16 +10,16 @@ var channelService = require('./common/service/channelService');
 
 app.get('/', function (req, res) {
     logger.info('accept request.');
+    ruleEngine.init();
+    var rules = ruleEngine.ruleCollections;
     res.send('Hello World!' + config.server.name);
-    //ruleEngine();
-    var data = channelService.getChannelByInstCode('0701','ICBC');
-    logger.info(data);
-    
-/*    var rules = ruleEngin();
-    logger.info("hello rules");
+
+    /*logger.info("hello rules");
     var result = rules['queryChannelRule']();
-    logger.info(result[0].bank);*/
-    var promise = db.queryOne('select * from router_channel', null);
+    var re=result({name:"hello"},{bank:"CMB"});
+    logger.info(re[0].bank);*/
+/*
+    var promise = db.queryOne();
     promise.then(function (data) {
         for(var i = 0; i< data.length; i++){
             logger.info(data[i]);
@@ -27,6 +27,7 @@ app.get('/', function (req, res) {
     }).fail(function (err) {
         logger.error(err);
     });
+    */
     logger.info('deal request done.');
 })
 
