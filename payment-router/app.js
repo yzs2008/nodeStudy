@@ -4,16 +4,18 @@ var logger = require('./common/logger');
 var config = require('./common/config');
 var db = require('./common/service/mysql');
 var Q = require('q');
-var ruleEngin = require('./function/ruleLoader');
+var ruleEngine = require('./function/ruleLoader');
 
 app.get('/', function (req, res) {
     logger.info('accept request.');
+    ruleEngine.init();
+    var rules = ruleEngine.ruleCollections;
     res.send('Hello World!' + config.server.name);
-    var rules = ruleEngin();
-    logger.info("hello rules");
+
+    /*logger.info("hello rules");
     var result = rules['queryChannelRule']();
     var re=result({name:"hello"},{bank:"CMB"});
-    logger.info(re[0].bank);
+    logger.info(re[0].bank);*/
 /*
     var promise = db.queryOne();
     promise.then(function (data) {

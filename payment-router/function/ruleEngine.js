@@ -9,23 +9,10 @@ module.exports = {
      */
     assemble: function (accessor, type) {
         rules = {}
-
-        var dir = config.rulePath;
-        fs.readdirSync(__dirname + '/' + dir).forEach(function (fileName) {
-            if (!/\.js$/.test(fileName)) {
-                return;
-            }
-            var name = path.basename(fileName, '.js');
-            var _load = load.bind(null, './' + dir + '/', name);
-
-            rules[name] = _load;
-        });
-
         return rules;
     }
 }
 
-}
 var load = function (path, name) {
     if (name) {
         return require(path + name);
