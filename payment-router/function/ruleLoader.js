@@ -3,9 +3,6 @@ var path = require('path');
 var config = require('../common/config');
 
 var load = function(path, name) {
-    if (name) {
-        return require(path + name);
-    }
     return require(path);
 };
 
@@ -18,7 +15,7 @@ module.exports = function () {
             return;
         }
         var name = path.basename(fileName, '.js');
-        var _load = load.bind(null, './' + dir + '/', name);
+        var _load = load('./' + dir + '/' + name);
 
         rules[name] = _load;
     });

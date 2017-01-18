@@ -1,0 +1,10 @@
+
+交易类型[transaction type][transType]
+    收款[collection][COP]
+    放款[loan][LOAN]
+    签约[sign][SIGN]
+
+业务类型[business type][bizType]
+    对公业务[Corporate Business][corporate]
+    对私业务[Personal Business][personal]
+

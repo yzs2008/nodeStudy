@@ -5,22 +5,32 @@ var Q = require('q');
 var pool = mysql.createPool(config.mysqlConfig);
 
 module.exports = {
-    queryOne: function () {
+    queryOne: function (queryString, paramObj) {
         var deferred = Q.defer();
 
-        pool.getConnection(function(err, connection) {
-            connection.query( 'select * from router_channel', function(err, results) {
+        pool.getConnection(function (err, connection) {
+            connection.query(queryString, paramObj, function (err, results) {
                 connection.release();
-                if(err){
+                if (err) {
                     deferred.reject(err);
                 }
                 deferred.resolve(results);
             });
         });
-        
+
         return deferred.promise;
     },
-    queryList: function () {
-
+    queryList: function (queryString, paramObj) {
+        var deferred = Q.defer();
+        pool.getConnection(function (err, connection) {
+            connection.query(queryString, paramObj, function (err, results) {
+                connection.release();
+                if (err) {
+                    deferred.reject(err);
+                }
+                deferred.resolve(results);
+            })
+        })
+        return deferred.promise;
     }
 };
