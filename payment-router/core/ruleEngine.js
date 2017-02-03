@@ -8,9 +8,10 @@ var g = require('../common/globalVariable');
 module.exports = {
     fire: function (req) {
         var accessor = 'default';
-        var routerType = 'sign';
-        var ruleChain = assemble(accessor, routerType);
-        ruleChain[0]();
+        var routerType = 'COP';
+        assemble(accessor, routerType).then(function (ruleChain) {
+            ruleChain[0]();
+        });
     }
 };
 
@@ -18,21 +19,18 @@ module.exports = {
  根据accessor，type 查找缓存中是否有对应的规则链表，有，使用，无，解析并加入缓存
  */
 var assemble = function (accessor, routerType) {
-    var ruleChain = {};
-    var assembleRuleChain = productRuleService.getRuleContentByAccessor(accessor, routerType);
-    assembleRuleChain
-        .then(function (data) {
-            ruleChain = getRuleChain(data);
-            return ruleChain;
-        })
-        .fail(function (err) {
-            return ruleChain;
-        });
+    //var data = productRuleService.getRuleContentByAccessor(accessor, routerType);
+    return productRuleService.getRuleContentByAccessor(accessor, routerType).then(function (data) {
+        var ruleChain = {};
+        ruleChain = getRuleChain(data);
+        return ruleChain;
+    })
+    //ruleChain = getRuleChain(data);
 };
 
 var getRuleChain = function (data) {
     var ruleChain = {};
-    var ruleNames = data.split(',');
+    var ruleNames = data[0]['pre_rule_content'].split(',');
     for (var i = 0; i < ruleNames.length - 1; i++) {
         var rule = ruleNames[i];
         rule.next = ruleChain[i + 1];
