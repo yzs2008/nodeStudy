@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var routerConsts = require('../common/consts/routerConsts');
+var g = require('../common/globalVariable');
 
 var ruleCollection = {
     precondition: {},
@@ -35,7 +36,8 @@ module.exports = {
         var ruleType = routerConsts.ruleType;
         Object.keys(ruleType).forEach(function (key) {
             loadRuleCollection(ruleType[key]);
-        })
+        });
+        g.ruleCollection = ruleCollection;
     },
     reload: function () {
         //重新加载所有规则

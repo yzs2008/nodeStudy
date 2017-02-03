@@ -1,4 +1,6 @@
+var logger = require('../../../common/logger');
+
 module.exports = function (request, routerInfo) {
-    routerInfo = [{name:"yspay",bank:"ICBC"}];
-    return routerInfo;
+    logger.info('exeucte queryChannelRule.')
+    return this.next();
 }

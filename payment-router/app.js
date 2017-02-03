@@ -1,5 +1,12 @@
-var express = require('express');
-var app = express();
+var express = require('express')
+var app = express()
+var logger = require('./common/logger');
+var config = require('./common/config');
+var db = require('./common/service/mysqlService');
+var Q = require('q');
+var ruleLoader = require('./function/ruleLoader');
+var ruleEngine = require('./function/ruleEngine');
+var channelService = require('./common/service/channelService');
 
 var collect = require('./router/collect');
 /*
@@ -17,8 +24,7 @@ app.use('/router/collect', collect);
 /*
 app.get('/', function (req, res) {
     logger.info('accept request.');
-    ruleEngine.init();
-    var rules = ruleEngine.ruleCollections;
+    ruleEngine.fire(req);
     res.send('Hello World!' + config.server.name);
 
     logger.info("hello rules");
@@ -38,4 +44,6 @@ app.get('/', function (req, res) {
  */
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!')
+    ruleLoader.init();
+    console.log('rule loader complete.')
 })
