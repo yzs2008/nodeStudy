@@ -14,8 +14,9 @@ var collect = require('./router/collect');
 
 app.get('/', function (req, res) {
     logger.info('accept request.');
-    ruleEngine.fire(req);
-    res.send('Hello World!' + config.server.name);
+    ruleEngine.fire(req).then(function (data) {
+        res.send('Hello World! ' + data.toString());
+    });
 });
 
 app.listen(3000, function () {
