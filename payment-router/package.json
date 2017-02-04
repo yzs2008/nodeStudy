@@ -1,28 +1,36 @@
 {
-    "name": "payment-router",
-    "version": "1.0.0",
-    "description": "payment router",
-    "main": "app.js",
-    "keywords": [
-        "router",
-        "collect",
-        "sign",
-        "withdraw"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/yzs2008/nodeStudy.git"
-    },
-    "author": "kaidi",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/yzs2008/nodeStudy/issues"
-    },
-    "homepage": "https://github.com/yzs2008/nodeStudy#readme",
-    "dependencies": {
-        "express": "4.14.0",
-        "q": "1.4.1",
-        "log4js": "1.0.1",
-        "mysql":"2.12.0"
-    }
+  "name": "payment-router",
+  "version": "1.0.0",
+  "description": "payment router",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "router",
+    "collect",
+    "sign",
+    "withdraw"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yzs2008/nodeStudy.git"
+  },
+  "author": "kaidi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yzs2008/nodeStudy/issues"
+  },
+  "homepage": "https://github.com/yzs2008/nodeStudy#readme",
+  "dependencies": {
+    "express": "4.14.0",
+    "q": "1.4.1",
+    "log4js": "1.0.1",
+    "mysql": "2.12.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^2.0.1",
+    "mocha": "3.2.0"
+  }
 }

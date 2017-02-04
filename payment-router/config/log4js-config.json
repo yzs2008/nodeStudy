@@ -2,7 +2,7 @@
     "appenders": [
         {
             "type"                : "dateFile",
-            "filename"            : "./log/",
+            "filename"            : "log/",
             "pattern"             : "yyyy-MM-dd.log",
             "alwaysIncludePattern": true
         },

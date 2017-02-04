@@ -1,5 +1,5 @@
 var mysql = require('mysql');
-var config = require('../config');
+var config = require('../common/config');
 var Q = require('q');
 
 var pool = mysql.createPool(config.mysqlConfig);

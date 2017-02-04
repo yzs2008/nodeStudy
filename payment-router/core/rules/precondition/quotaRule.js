@@ -1,4 +1,4 @@
-var logger = require('../../../common/logger');
+var logger = require('../../../common/logger')('quotaRule');
 
 module.exports = function (request, routerInfo) {
     logger.info('execute qutotaRule!');

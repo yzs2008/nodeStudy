@@ -1,26 +1,16 @@
 var express = require('express')
 var app = express()
-var logger = require('./common/logger');
+var logger = require('./common/logger')('application');
 var config = require('./common/config');
-var db = require('./common/service/mysqlService');
-var Q = require('q');
+
 var ruleLoader = require('./core/ruleLoader');
-var ruleEngine = require('./core/ruleEngine');
-var channelService = require('./common/service/channelService');
 
 var collect = require('./router/collect');
 
-//app.use('/router/collect', collect);
+app.use('/router/collect', collect);
 
-app.get('/', function (req, res) {
-    logger.info('accept request.');
-    ruleEngine.fire(req).then(function (data) {
-        res.send('Hello World! ' + data.toString());
-    });
-});
-
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!')
+app.listen(config.http.port, function () {
+    logger.info('Application begin to listening on port',config.http.port);
     ruleLoader.init();
-    console.log('rule loader complete.')
+    logger.info('Application started completely. listening on port',config.http.port);
 })
