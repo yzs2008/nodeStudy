@@ -6,5 +6,5 @@ module.exports = function (request, routerInfo) {
     if(boolean){
         throw error('no router find');
     }
-    return this[0].next(request, routerInfo);
+    return this.nextRule.doRule(request, routerInfo);
 }

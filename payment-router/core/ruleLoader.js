@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var routerConsts = require('../common/consts/routerConsts');
 var g = require('../common/globalVariable');
-var logger = require('../common/logger')('ruleLoader');
+var logger = require('../common/logger')('ruleEngine');
 
 var ruleCollection = {
     precondition: {},
