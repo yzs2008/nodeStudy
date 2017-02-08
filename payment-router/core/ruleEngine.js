@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var config = require('../common/config');
 var productRuleService = require('../service/productRuleService');
-var g = require('../common/globalVariable');
+var ruleDefineService = require('../service/ruleDefineService');
 var logger = require('../common/logger')('ruleEngine');
 var ruleLoader = require('./ruleLoader');
 var consts = require('../common/consts/routerConsts');
@@ -31,44 +31,63 @@ var assemble = function (accessor, routerType) {
                              });
 };
 
-var getRuleChain = function (data) {
+var getRuleChain = function (rawData) {
     var ruleChain = [];
     var ruleNames = {};
-    Object.keys(consts.ruleType).forEach(function (key) {
-        ruleNames[key] = getRuleNames(data, key);
-    });
 
-    Object.keys(ruleNames).forEach(function (key) {
-        var curCollection = ruleNames[key];
-        var index = ruleChain.length;
-        for (var i = index; i < index + curCollection.length; i++) {
-            var rule = ruleLoader.load(curCollection[i - index], key);
-            ruleChain[i] = rule;
-        }
-    });
+    return getRuleNames(rawData, consts.ruleType.precondition)
+        .then(function (data) {
+            ruleNames[consts.ruleType.precondition] = data;
+            return getRuleNames(rawData, consts.ruleType.priority);
+        })
+        .then(function (data) {
+            ruleNames[consts.ruleType.priority] = data;
+            return getRuleNames(rawData, consts.ruleType.postcondition);
+        })
+        .then(function (data) {
+            ruleNames[consts.ruleType.postcondition] = data;
+            return ruleNames;
+        })
+        .fail(function (err) {
+            logger.error(err);
+        });
+    /*
+     Object.keys(consts.ruleType).forEach(function (key) {
+     ruleNames[key] = getRuleNames(rawData, key);
+     });
 
-    var ruleChainResult = [];
-    //link the rules
-    for (var i = 0; i < ruleChain.length; i++) {
-        var item = {};
-        item['doRule'] = ruleChain[i];
-        //item['nextRule'] = ruleChain[i + 1];
-        //ruleChain[i]['nextRule'] = ruleChain[i + 1];
-        ruleChainResult[i] = item;
-    }
+     Object.keys(ruleNames).forEach(function (key) {
+     var curCollection = ruleNames[key];
+     var index = ruleChain.length;
+     for (var i = index; i < index + curCollection.length; i++) {
+     var rule = ruleLoader.load(curCollection[i - index], key);
+     ruleChain[i] = rule;
+     }
+     });
 
-    for( var rr=0 ;rr < ruleChainResult.length-1; rr++){
-        ruleChainResult[rr].nextRule = ruleChainResult[rr+1];
-    }
-    return ruleChainResult;
+     var ruleChainResult = [];
+     //link the rules
+     for (var i = 0; i < ruleChain.length; i++) {
+     var item = {};
+     item['doRule'] = ruleChain[i];
+     ruleChainResult[i] = item;
+     }
+
+     for (var rr = 0; rr < ruleChainResult.length - 1; rr++) {
+     ruleChainResult[rr].nextRule = ruleChainResult[rr + 1];
+     }
+     return ruleChainResult;
+     */
 };
 
 var getRuleNames = function (data, ruleType) {
     var keyword = consts.ruleTypeConverter(ruleType);
     var ruleIdStr = data[0][keyword];
-    if(ruleIdStr == undefined || ruleIdStr == null || ruleIdStr == ''){
+    if (ruleIdStr == undefined || ruleIdStr == null || ruleIdStr == '') {
         return [];
     }
     var ruleNames = data[0][keyword].split(',');
-    return ruleNames;
+    return ruleDefineService.getRuleNameByRuleId(ruleNames, ruleType);
 };
+
+
