@@ -3,6 +3,7 @@ var ruleEngine = require('../core/ruleEngine');
 var logger = require('../common/logger')('collect');
 
 router.get('/channel', function (req, res) {
+    //param check
     return ruleEngine.fire(req).then(function (data) {
         logger.info(data);
         res.send(data);

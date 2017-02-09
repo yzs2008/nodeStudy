@@ -5,17 +5,18 @@ var productRuleService = require('../service/productRuleService');
 var ruleDefineService = require('../service/ruleDefineService');
 var logger = require('../common/logger')('ruleEngine');
 var ruleLoader = require('./ruleLoader');
-var consts = require('../common/consts/routerConsts');
+var routerConsts = require('../common/consts/routerConsts');
 
 
 module.exports = {
     fire: function (req) {
         var accessor = 'yzs';
         var routerType = 'COP';
-        return assemble(accessor, routerType)
+        return assembleRuleChain(accessor, routerType)
             .then(function (ruleChain) {
                 return ruleChain[0].doRule(req);
-            }).fail(function (err) {
+            })
+            .fail(function (err) {
                 logger.info(err);
             });
     }
@@ -24,10 +25,10 @@ module.exports = {
 /*
  根据accessor，type 查找缓存中是否有对应的规则链表，有，使用，无，解析并加入缓存
  */
-var assemble = function (accessor, routerType) {
+var assembleRuleChain = function (accessor, routerType) {
     return productRuleService.getRuleContentByAccessor(accessor, routerType)
-                             .then(function (data) {
-                                 return getRuleName(data);
+                             .then(function (rawData) {
+                                 return parseRuleConfig(rawData);
                              })
                              .then(function (ruleNames) {
                                  return getRuleChain(ruleNames);
@@ -60,20 +61,20 @@ var getRuleChain = function (ruleNames) {
     return ruleChainResult;
 };
 
-var getRuleName = function (rawData) {
+var parseRuleConfig = function (rawData) {
     var ruleNames = {};
 
-    return getRuleNames(rawData, consts.ruleType.precondition)
+    return getRuleNames(rawData, routerConsts.ruleType.precondition)
         .then(function (data) {
-            ruleNames[consts.ruleType.precondition] = data;
-            return getRuleNames(rawData, consts.ruleType.priority);
+            ruleNames[routerConsts.ruleType.precondition] = data;
+            return getRuleNames(rawData, routerConsts.ruleType.priority);
         })
         .then(function (data) {
-            ruleNames[consts.ruleType.priority] = data;
-            return getRuleNames(rawData, consts.ruleType.postcondition);
+            ruleNames[routerConsts.ruleType.priority] = data;
+            return getRuleNames(rawData, routerConsts.ruleType.postcondition);
         })
         .then(function (data) {
-            ruleNames[consts.ruleType.postcondition] = data;
+            ruleNames[routerConsts.ruleType.postcondition] = data;
             return ruleNames;
         })
         .fail(function (err) {
@@ -81,13 +82,13 @@ var getRuleName = function (rawData) {
         });
 };
 
-var getRuleNames = function (data, ruleType) {
-    var keyword = consts.ruleTypeConverter(ruleType);
-    var ruleIdStr = data[0][keyword];
+var getRuleNames = function (rawData, ruleType) {
+    var keyword = routerConsts.ruleTypeConverter(ruleType);
+    var ruleIdStr = rawData[keyword];
     if (ruleIdStr == undefined || ruleIdStr == null || ruleIdStr == '') {
         return [];
     }
-    var ruleNames = data[0][keyword].split(',');
+    var ruleNames = ruleIdStr.split(',');
     return ruleDefineService.getRuleNameByRuleId(ruleNames, ruleType);
 };
 

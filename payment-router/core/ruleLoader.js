@@ -1,8 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var routerConsts = require('../common/consts/routerConsts');
-var g = require('../common/globalVariable');
-var logger = require('../common/logger')('ruleEngine');
+var logger = require('../common/logger')('ruleLoader');
 
 var ruleCollection = {
     precondition: {},
@@ -39,7 +38,6 @@ module.exports = {
         Object.keys(ruleType).forEach(function (key) {
             initRuleCollection(ruleType[key], ruleCollection);
         });
-        g.ruleCollection = ruleCollection;
         logger.info('load all rules complete.');
     },
     reload: function () {
