@@ -3,12 +3,12 @@ var ruleEngine = require('../core/ruleEngine');
 var logger = require('../common/logger')('collect');
 
 router.get('/channel', function (req, res) {
-    ruleEngine.fire(req).then(function (data) {
-        res.write(data);
+    return ruleEngine.fire(req).then(function (data) {
         logger.info(data);
+        res.send(data);
     }).fail(function (err) {
-        res.write(err);
         logger.info(err);
+        res.send(err);
     });
 
 });

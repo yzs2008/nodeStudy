@@ -27,12 +27,40 @@ module.exports = {
 var assemble = function (accessor, routerType) {
     return productRuleService.getRuleContentByAccessor(accessor, routerType)
                              .then(function (data) {
-                                 return getRuleChain(data);
+                                 return getRuleName(data);
+                             })
+                             .then(function (ruleNames) {
+                                 return getRuleChain(ruleNames);
                              });
 };
 
-var getRuleChain = function (rawData) {
+var getRuleChain = function (ruleNames) {
+
     var ruleChain = [];
+    Object.keys(ruleNames).forEach(function (key) {
+        var curCollection = ruleNames[key];
+        var index = ruleChain.length;
+        for (var i = index; i < index + curCollection.length; i++) {
+            var rule = ruleLoader.load(curCollection[i - index], key);
+            ruleChain[i] = rule;
+        }
+    });
+
+    var ruleChainResult = [];
+    //link the rules
+    for (var i = 0; i < ruleChain.length; i++) {
+        var item = {};
+        item['doRule'] = ruleChain[i];
+        ruleChainResult[i] = item;
+    }
+
+    for (var rr = 0; rr < ruleChainResult.length - 1; rr++) {
+        ruleChainResult[rr].nextRule = ruleChainResult[rr + 1];
+    }
+    return ruleChainResult;
+};
+
+var getRuleName = function (rawData) {
     var ruleNames = {};
 
     return getRuleNames(rawData, consts.ruleType.precondition)
@@ -51,33 +79,6 @@ var getRuleChain = function (rawData) {
         .fail(function (err) {
             logger.error(err);
         });
-    /*
-     Object.keys(consts.ruleType).forEach(function (key) {
-     ruleNames[key] = getRuleNames(rawData, key);
-     });
-
-     Object.keys(ruleNames).forEach(function (key) {
-     var curCollection = ruleNames[key];
-     var index = ruleChain.length;
-     for (var i = index; i < index + curCollection.length; i++) {
-     var rule = ruleLoader.load(curCollection[i - index], key);
-     ruleChain[i] = rule;
-     }
-     });
-
-     var ruleChainResult = [];
-     //link the rules
-     for (var i = 0; i < ruleChain.length; i++) {
-     var item = {};
-     item['doRule'] = ruleChain[i];
-     ruleChainResult[i] = item;
-     }
-
-     for (var rr = 0; rr < ruleChainResult.length - 1; rr++) {
-     ruleChainResult[rr].nextRule = ruleChainResult[rr + 1];
-     }
-     return ruleChainResult;
-     */
 };
 
 var getRuleNames = function (data, ruleType) {
