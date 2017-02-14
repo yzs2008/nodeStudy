@@ -1,8 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 var config = require('../common/config');
-var productRuleService = require('../service/productRuleService');
-var ruleDefineService = require('../service/ruleDefineService');
+var productRuleService = require('../daoservice/productRuleService');
+var ruleDefineService = require('../daoservice/ruleDefineService');
 var logger = require('../common/logger')('ruleEngine');
 var ruleLoader = require('./ruleLoader');
 var routerConsts = require('../common/consts/routerConsts');
@@ -10,8 +10,8 @@ var routerConsts = require('../common/consts/routerConsts');
 
 module.exports = {
     fire: function (req) {
-        var accessor = 'yzs';
-        var routerType = 'COP';
+        var accessor = req.accessor;
+        var routerType = req.routerType;
         return assembleRuleChain(accessor, routerType)
             .then(function (ruleChain) {
                 return ruleChain[0].doRule(req);
@@ -54,9 +54,8 @@ var getRuleChain = function (ruleNames) {
         item['doRule'] = ruleChain[i];
         ruleChainResult[i] = item;
     }
-
-    for (var rr = 0; rr < ruleChainResult.length - 1; rr++) {
-        ruleChainResult[rr].nextRule = ruleChainResult[rr + 1];
+    for (var i = 0; i < ruleChainResult.length - 1; i++) {
+        ruleChainResult[i].nextRule = ruleChainResult[i + 1];
     }
     return ruleChainResult;
 };
