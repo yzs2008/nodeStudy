@@ -11,8 +11,8 @@ var routerConsts = require('../common/consts/routerConsts');
 module.exports = {
     fire: function (req) {
         var accessor = req.accessor;
-        var routerType = req.routerType;
-        return assembleRuleChain(accessor, routerType)
+        var transType = req.transType;
+        return assembleRuleChain(accessor, transType)
             .then(function (ruleChain) {
                 return ruleChain[0].doRule(req);
             })
@@ -25,8 +25,8 @@ module.exports = {
 /*
  根据accessor，type 查找缓存中是否有对应的规则链表，有，使用，无，解析并加入缓存
  */
-var assembleRuleChain = function (accessor, routerType) {
-    return productRuleService.getRuleContentByAccessor(accessor, routerType)
+var assembleRuleChain = function (accessor, transType) {
+    return productRuleService.getRuleContentByAccessor(accessor, transType)
                              .then(function (rawData) {
                                  return parseRuleConfig(rawData);
                              })
