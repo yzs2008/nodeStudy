@@ -18,7 +18,7 @@ module.exports = {
         return false;
     },
     isEmptyArray: function (arr) {
-        if (arr == nulj || arr == undefined) {
+        if (arr == null || arr == undefined) {
             return true;
         }
         if(typeof arr != "array"){

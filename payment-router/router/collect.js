@@ -13,11 +13,11 @@ router.post('/find/channel', function (req, res) {
 
     return ruleEngine.fire(req.body)
                      .then(function (data) {
-                         respWrapper.data(data);
+                         respWrapper.data(data, res);
                      })
                      .fail(function (err) {
-                         logger.error(err);
-                         respWrapper.error(err);
+                         logger.error(err.message);
+                         respWrapper.error(err.message, res);
                      });
 
 });

@@ -15,9 +15,6 @@ module.exports = {
         return assembleRuleChain(accessor, transType)
             .then(function (ruleChain) {
                 return ruleChain[0].doRule(req);
-            })
-            .fail(function (err) {
-                logger.info(err);
             });
     }
 };
