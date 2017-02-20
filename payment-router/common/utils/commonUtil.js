@@ -21,13 +21,9 @@ module.exports = {
         if (arr == null || arr == undefined) {
             return true;
         }
-        if(typeof arr != "array"){
-            //return false;
-            return true;
-        }
         if(arr.length == 0){
             return true;
         }
-        return false;
+        return true ;
     }
 };
