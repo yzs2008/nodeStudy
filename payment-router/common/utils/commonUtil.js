@@ -6,16 +6,10 @@ module.exports = {
         return false;
     },
     isEmptyStr: function (str) {
-        if (str == null || str == undefined) {
-            return true;
-        }
-        if (typeof str != "string") {
-            return false;
-        }
-        if(str.trim() == ""){
-            return true;
-        }
-        return false;
+        return emptyStr(str);
+    },
+    isNotEmptyStr: function (str) {
+        return !emptyStr(str);
     },
     isEmptyArray: function (arr) {
         if (arr == null || arr == undefined) {
@@ -26,4 +20,14 @@ module.exports = {
         }
         return true ;
     }
+};
+
+let emptyStr = function(str){
+    if (str == null || str == undefined) {
+        return true;
+    }
+    if(str == "" || str.trim() == ""){
+        return true;
+    }
+    return false;
 };

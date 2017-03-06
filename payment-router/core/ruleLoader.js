@@ -34,10 +34,10 @@ module.exports = {
     init: function () {
         //加载所所有的规则
         logger.info('start to load all rules.');
-        var ruleType = routerConsts.ruleType;
-        Object.keys(ruleType).forEach(function (key) {
-            initRuleCollection(ruleType[key], ruleCollection);
-        });
+        let ruleType = routerConsts.ruleType;
+        for(let rt in  ruleType){
+            initRuleCollection(ruleType[rt], ruleCollection);
+        }
         logger.info('load all rules complete.');
     },
     reload: function () {
@@ -58,18 +58,18 @@ module.exports = {
     ruleCollections: ruleCollection
 
 }
-var initRuleCollection = function (rType, rCollection) {
+let initRuleCollection = function (rType, rCollection) {
     logger.info('start to load ', rType, 'rules.')
 
-    var rulesPath = __dirname + '/rules/' + rType;
+    let rulesPath = __dirname + '/rules/' + rType;
     fs.readdirSync(rulesPath).forEach(function (fileName) {
         if (!/\.js$/.test(fileName)) {
             logger.warn('incorrect file in ', rType, 'rule folder.', fileName, 'skipped!');
             return;
         }
-        var ruleName = path.basename(fileName, '.js');
-        var filePath = './rules/' + rType + '/' + fileName;
-        var rule = loadRule(filePath);
+        let ruleName = path.basename(fileName, '.js');
+        let filePath = './rules/' + rType + '/' + fileName;
+        let rule = loadRule(filePath);
 
         rCollection[rType][ruleName] = rule;
 
@@ -78,6 +78,6 @@ var initRuleCollection = function (rType, rCollection) {
 
     logger.info('load ', rType, 'rules complete.')
 }
-var loadRule = function (filePath) {
+let loadRule = function (filePath) {
     return require(filePath);
 };
