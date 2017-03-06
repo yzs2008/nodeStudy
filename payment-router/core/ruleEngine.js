@@ -1,17 +1,18 @@
-var fs = require('fs');
-var path = require('path');
-var config = require('../common/config');
-var productRuleService = require('../daoservice/productRuleService');
-var ruleDefineService = require('../daoservice/ruleDefineService');
-var logger = require('../common/logger')('ruleEngine');
-var ruleLoader = require('./ruleLoader');
-var routerConsts = require('../common/consts/routerConsts');
+let fs = require('fs');
+let path = require('path');
+let config = require('../common/config');
+let productRuleService = require('../daoservice/productRuleService');
+let ruleDefineService = require('../daoservice/ruleDefineService');
+let logger = require('../common/logger')('ruleEngine');
+let ruleLoader = require('./ruleLoader');
+let routerConsts = require('../common/consts/routerConsts');
+let commonUtil = require('../common/utils/commonUtil');
 
 
 module.exports = {
     fire: function (req) {
-        var accessor = req.accessor;
-        var transType = req.transType;
+        let accessor = req.accessor;
+        let transType = req.transType;
         return assembleRuleChain(accessor, transType)
             .then(function (ruleChain) {
                 return ruleChain[0].doRule(req);
@@ -72,9 +73,6 @@ var parseRuleConfig = function (rawData) {
         .then(function (data) {
             ruleNames[routerConsts.ruleType.postcondition] = data;
             return ruleNames;
-        })
-        .fail(function (err) {
-            logger.error(err);
         });
 };
 

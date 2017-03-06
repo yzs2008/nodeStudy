@@ -1,5 +1,5 @@
 
-var respDatagram = {};
+let respDatagram = {};
 
 module.exports={
     

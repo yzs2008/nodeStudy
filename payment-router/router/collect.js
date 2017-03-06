@@ -16,8 +16,8 @@ router.post('/find/channel', function (req, res) {
                          respWrapper.data(data, res);
                      })
                      .fail(function (err) {
-                         logger.error(err.message);
-                         respWrapper.error(err.message, res);
+                         logger.error(err);
+                         respWrapper.error(err, res);
                      });
 
 });

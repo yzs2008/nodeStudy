@@ -1,6 +1,7 @@
 module.exports = {
     router: {
-        "000101": "系统配置错误-xxxx",
+        configError_at_01:{code:"000101",msg: "系统配置错误-根据accessor和transType无匹配"},
+        configError_at_02:{code:"000102",msg: "系统配置错误-根据accessor和transType找到多条匹配"},
         "000102": "系统配置错误-yyyy",
 
         "000201": "系统业务异常-hhhhh",
