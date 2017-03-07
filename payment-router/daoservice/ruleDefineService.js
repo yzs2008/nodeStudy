@@ -1,21 +1,23 @@
-var dao = require('./mysqlService');
-var logger = require('../common/logger')('ruleDefineService');
+let dao = require('./mysqlService');
+let logger = require('../common/logger')('ruleDefineService');
+let commonUtil = require('../common/utils/commonUtil');
+let returnCode = require('../common/consts/returnCode');
 
 module.exports = {
     getRuleNameByRuleId: function (ruleIdList, routerType) {
-        var queryStr = "select bean_id from router_rule_def where rule_id in (?) and rule_type = ?";
-        var paramObjs = [ruleIdList, routerType];
+        let queryStr = "select bean_id from router_rule_def where rule_id in (?) and rule_type = ?";
+        let paramObjs = [ruleIdList, routerType];
         return dao.queryList(queryStr, paramObjs)
-                  .then(function (data) {
-                      var result = [];
-                      for (var i = 0; i < data.length; i++) {
-                          result[i] = data[i]['bean_id'];
+                  .then(function (rawData) {
+                      if (commonUtil.isEmptyArray(rawData)) {
+                          logger.error('读取规则名称失败', returnCode.router.configError_at_03);
+                          throw returnCode.router.configError_at_03;
+                      }
+                      let result = [];
+                      for (let i = 0; i < rawData.length; i++) {
+                          result[i] = rawData[i]['bean_id'];
                       }
                       return result;
-                  })
-                  .fail(function (err) {
-                      return [];
-                      logger.info(err);
                   });
     }
 };

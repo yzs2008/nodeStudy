@@ -7,6 +7,7 @@ let logger = require('../common/logger')('ruleEngine');
 let ruleLoader = require('./ruleLoader');
 let routerConsts = require('../common/consts/routerConsts');
 let commonUtil = require('../common/utils/commonUtil');
+let returnCode = require('../common/consts/returnCode');
 
 
 module.exports = {
@@ -15,6 +16,10 @@ module.exports = {
         let transType = req.transType;
         return assembleRuleChain(accessor, transType)
             .then(function (ruleChain) {
+                if(commonUtil.isEmptyArray(ruleChain)){
+                    logger.error('规则链为空', returnCode.router.configError_at_05);
+                    throw  returnCode.router.configError_at_05;
+                }
                 return ruleChain[0].doRule(req);
             });
     }
@@ -23,52 +28,51 @@ module.exports = {
 /*
  根据accessor，type 查找缓存中是否有对应的规则链表，有，使用，无，解析并加入缓存
  */
-var assembleRuleChain = function (accessor, transType) {
+let assembleRuleChain = function (accessor, transType) {
     return productRuleService.getRuleContentByAccessor(accessor, transType)
-                             .then(function (rawData) {
-                                 return parseRuleConfig(rawData);
+                             .then(function (ruleConfig) {
+                                 return parseRuleConfig(ruleConfig);
                              })
                              .then(function (ruleNames) {
                                  return getRuleChain(ruleNames);
                              });
 };
 
-var getRuleChain = function (ruleNames) {
+let getRuleChain = function (ruleNames) {
 
-    var ruleChain = [];
-    Object.keys(ruleNames).forEach(function (key) {
-        var curCollection = ruleNames[key];
-        var index = ruleChain.length;
-        for (var i = index; i < index + curCollection.length; i++) {
-            var rule = ruleLoader.load(curCollection[i - index], key);
-            ruleChain[i] = rule;
+    let ruleChain = [];
+    for(let key in ruleNames){
+        let curCollection = ruleNames[key];
+        let index = ruleChain.length;
+        for (let i = index; i < index + curCollection.length; i++) {
+            ruleChain[i] =ruleLoader.load(curCollection[i - index], key);
         }
-    });
+    }
 
-    var ruleChainResult = [];
+    let ruleChainResult = [];
     //link the rules
-    for (var i = 0; i < ruleChain.length; i++) {
-        var item = {};
+    for (let i = 0; i < ruleChain.length; i++) {
+        let item = {};
         item['doRule'] = ruleChain[i];
         ruleChainResult[i] = item;
     }
-    for (var i = 0; i < ruleChainResult.length - 1; i++) {
+    for (let i = 0; i < ruleChainResult.length - 1; i++) {
         ruleChainResult[i].nextRule = ruleChainResult[i + 1];
     }
     return ruleChainResult;
 };
 
-var parseRuleConfig = function (rawData) {
-    var ruleNames = {};
+let parseRuleConfig = function (ruleConfig) {
+    let ruleNames = {};
 
-    return getRuleNames(rawData, routerConsts.ruleType.precondition)
+    return getRuleNames(ruleConfig, routerConsts.ruleType.precondition)
         .then(function (data) {
             ruleNames[routerConsts.ruleType.precondition] = data;
-            return getRuleNames(rawData, routerConsts.ruleType.priority);
+            return getRuleNames(ruleConfig, routerConsts.ruleType.priority);
         })
         .then(function (data) {
             ruleNames[routerConsts.ruleType.priority] = data;
-            return getRuleNames(rawData, routerConsts.ruleType.postcondition);
+            return getRuleNames(ruleConfig, routerConsts.ruleType.postcondition);
         })
         .then(function (data) {
             ruleNames[routerConsts.ruleType.postcondition] = data;
@@ -76,13 +80,13 @@ var parseRuleConfig = function (rawData) {
         });
 };
 
-var getRuleNames = function (rawData, ruleType) {
-    var keyword = routerConsts.ruleTypeConverter(ruleType);
-    var ruleIdStr = rawData[keyword];
-    if (ruleIdStr == undefined || ruleIdStr == null || ruleIdStr == '') {
+let getRuleNames = function (ruleConfig, ruleType) {
+    let ruleIdStr = ruleConfig[ruleType];
+
+    if (commonUtil.isEmptyStr(ruleIdStr)) {
         return [];
     }
-    var ruleNames = ruleIdStr.split(',');
+    let ruleNames = ruleIdStr.split(',');
     return ruleDefineService.getRuleNameByRuleId(ruleNames, ruleType);
 };
 

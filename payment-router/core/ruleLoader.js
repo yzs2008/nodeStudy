@@ -1,9 +1,12 @@
-var fs = require('fs');
-var path = require('path');
-var routerConsts = require('../common/consts/routerConsts');
-var logger = require('../common/logger')('ruleLoader');
+let fs = require('fs');
+let path = require('path');
+let routerConsts = require('../common/consts/routerConsts');
+let logger = require('../common/logger')('ruleLoader');
+let commonUtil = require('../common/utils/commonUtil');
+let returnCode = require('../common/consts/returnCode');
 
-var ruleCollection = {
+
+let ruleCollection = {
     precondition: {},
     postcondition: {},
     priority: {}
@@ -19,11 +22,12 @@ module.exports = {
      * @returns {*}
      */
     load: function (ruleName, ruleType) {
-        var rule = ruleCollection[ruleType][ruleName];
-        if (rule == null || rule == undefined) {
-            var newRule = loadRule(ruleName, ruleType);
-            if (newRule == null) {
-                return new Error("undefinedRuleError:" + ruleName);
+        let rule = ruleCollection[ruleType][ruleName];
+        if (commonUtil.isEmptyObj(rule)) {
+            let newRule = loadRule(ruleType, ruleName);
+            if (commonUtil.isEmptyObj(newRule)) {
+                logger.error('不存在规则', ruleName, returnCode.router.configError_at_04);
+                throw returnCode.router.configError_at_04;
             }
             rule = newRule;
             ruleCollection[ruleType][ruleName] = rule;
@@ -35,7 +39,7 @@ module.exports = {
         //加载所所有的规则
         logger.info('start to load all rules.');
         let ruleType = routerConsts.ruleType;
-        for(let rt in  ruleType){
+        for (let rt in  ruleType) {
             initRuleCollection(ruleType[rt], ruleCollection);
         }
         logger.info('load all rules complete.');
@@ -43,8 +47,8 @@ module.exports = {
     reload: function () {
         //重新加载所有规则
         logger.info('start to reload all rules.');
-        var ruleType = routerConsts.ruleType;
-        var rCollection = {
+        let ruleType = routerConsts.ruleType;
+        let rCollection = {
             precondition: {},
             postcondition: {},
             priority: {}
@@ -57,7 +61,7 @@ module.exports = {
     },
     ruleCollections: ruleCollection
 
-}
+};
 let initRuleCollection = function (rType, rCollection) {
     logger.info('start to load ', rType, 'rules.')
 
@@ -68,8 +72,7 @@ let initRuleCollection = function (rType, rCollection) {
             return;
         }
         let ruleName = path.basename(fileName, '.js');
-        let filePath = './rules/' + rType + '/' + fileName;
-        let rule = loadRule(filePath);
+        let rule = loadRule(rType, fileName);
 
         rCollection[rType][ruleName] = rule;
 
@@ -77,7 +80,13 @@ let initRuleCollection = function (rType, rCollection) {
     });
 
     logger.info('load ', rType, 'rules complete.')
-}
-let loadRule = function (filePath) {
-    return require(filePath);
+};
+let loadRule = function (ruleType, ruleName) {
+    let filePath = './rules/' + ruleType + '/' + ruleName;
+    try{
+       return require(filePath);
+    }catch(e) {
+        logger.error('加载规则出错', e.message);
+        throw returnCode.router.configError_at_04;
+    }
 };

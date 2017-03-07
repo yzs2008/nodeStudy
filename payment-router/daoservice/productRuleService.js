@@ -9,16 +9,21 @@ module.exports = {
         var paramObjs = [accessor, transType];
         return dao.queryList(queryStr, paramObjs)
                   .then(function (data) {
-                      if (commonUtil.isEmptyArray(data[0])) {
+                      if (commonUtil.isEmptyArray(data)) {
                           logger.error('获取路由策略配置信息出错', returnCode.router.configError_at_01);
                           throw returnCode.router.configError_at_01;
                       }
-                      let rawData = data[0];
-                      if (rawData.length > 1) {
+                      if (data.length > 1) {
                           logger.error('获取路由策略配置信息出错', returnCode.router.configError_at_02);
                           throw returnCode.router.configError_at_02;
                       }
-                      return rawData;
+                      let rawData = data[0];
+                      let result = {
+                          priority:rawData.priority_rule_content,
+                          precondition:rawData.pre_rule_content,
+                          postcondition:rawData.end_rule_content
+                      };
+                      return result;
                   });
     }
 };

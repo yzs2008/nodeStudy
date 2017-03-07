@@ -15,18 +15,18 @@ module.exports = {
         if (arr == null || arr == undefined) {
             return true;
         }
-        if(arr.length == 0){
+        if (arr.length == 0) {
             return true;
         }
-        return true ;
+        return false;
     }
 };
 
-let emptyStr = function(str){
+let emptyStr = function (str) {
     if (str == null || str == undefined) {
         return true;
     }
-    if(str == "" || str.trim() == ""){
+    if (str == "" || str.trim() == "") {
         return true;
     }
     return false;

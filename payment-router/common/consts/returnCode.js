@@ -2,6 +2,9 @@ module.exports = {
     router: {
         configError_at_01:{code:"000101",msg: "系统配置错误-根据accessor和transType无匹配"},
         configError_at_02:{code:"000102",msg: "系统配置错误-根据accessor和transType找到多条匹配"},
+        configError_at_03:{code:"000103",msg: "系统配置错误-规则名称无匹配"},
+        configError_at_04:{code:"000104",msg: "系统配置错误-未能成功加载全部规则"},
+        configError_at_05:{code:"000105",msg: "系统配置错误-规则链为空"},
         "000102": "系统配置错误-yyyy",
 
         "000201": "系统业务异常-hhhhh",
