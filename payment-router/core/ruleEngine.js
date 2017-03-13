@@ -1,6 +1,3 @@
-let fs = require('fs');
-let path = require('path');
-let config = require('../common/config');
 let productRuleService = require('../daoservice/productRuleService');
 let ruleDefineService = require('../daoservice/ruleDefineService');
 let logger = require('../common/logger')('ruleEngine');

@@ -1,6 +1,6 @@
-var logger = require('../../../common/logger')('queryChannelRule');
-var channelService = require('../../../daoservice/channelService');
-var commonUtil = require('../../../common/utils/commonUtil');
+let logger = require('../../../common/logger')('queryChannelRule');
+let channelService = require('../../../daoservice/channelService');
+let commonUtil = require('../../../common/utils/commonUtil');
 
 module.exports = function (request, routerInfo) {
     logger.info('exeucte queryChannelRule.');

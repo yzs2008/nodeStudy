@@ -25,10 +25,6 @@ module.exports = {
         let rule = ruleCollection[ruleType][ruleName];
         if (commonUtil.isEmptyObj(rule)) {
             let newRule = loadRule(ruleType, ruleName);
-            if (commonUtil.isEmptyObj(newRule)) {
-                logger.error('不存在规则', ruleName, returnCode.router.configError_at_04);
-                throw returnCode.router.configError_at_04;
-            }
             rule = newRule;
             ruleCollection[ruleType][ruleName] = rule;
         }
