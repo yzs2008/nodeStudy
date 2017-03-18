@@ -15,13 +15,13 @@ module.exports = function (request, routerInfo) {
                              }
                              return selectParentStatus(routerList);
                          })
-                         .then(function (routerList, parentList) {
+                         .spread(function (routerList, parentList) {
                              routerInfo = filterByParentStatus(routerList, parentList);
 
                              if (commonUtil.isEmptyArray(routerInfo)) {
                                  logger.info(returnCode.router.no_router_found_at_parent_channel,
                                              '参数 transType:', request.transType, 'instCode:', request.instCode);
-                                 throw returnCode.router.no_router_found_at_channel;
+                                 throw returnCode.router.no_router_found_at_parent_channel;
                              }
 
                              return parent.nextRule.doRule(request, routerInfo);
@@ -29,17 +29,18 @@ module.exports = function (request, routerInfo) {
 };
 
 let selectParentStatus = function (routerList) {
-    let parentSet = {};
-    for (let item in routerList) {
-        if (parentSet.contains(item.parent)) {
+    let parentSet = [];
+    for (let i = 0; i < routerList.length; i++) {
+        var item = routerList[i];
+        if (parentSet.indexOf(item.parent) != -1) {
             continue;
         }
-        parentSet[item.parent] = item.parent;
+        parentSet.push(item.parent);
     }
 
     return [routerList, channelService.getParentChannelStatus(parentSet)];
 };
 
 let filterByParentStatus = function (routerList, parentList) {
-
+    logger.info('get access');
 };

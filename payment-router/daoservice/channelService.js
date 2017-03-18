@@ -8,8 +8,25 @@ module.exports = {
         return dao.queryList(queryStr, paramObjs)
                   .then(function (data) {
                       let result = [];
-                      for (let row in data) {
-                          result.push(copyField(row));
+                      for (let i = 0; i < data.length; i++) {
+                          result.push(copyField(data[i]));
+                      }
+                      return result;
+                  });
+    },
+    getParentChannelStatus: function (parentList) {
+        let queryStr = "select * from router_channel where channel_id in (?)";
+        let paramObjs = [parentList];
+        return dao.queryList(queryStr, paramObjs)
+                  .then(function (data) {
+                      let result = [];
+                      for (let i=0;i<data.length;i++ ) {
+                          let row = data[i];
+                          let item = {};
+                          item.parentChannelId = row.channel_id;
+                          item.parentChannelName = row.channel_name;
+                          item.status = row.status;
+                          result.push(item);
                       }
                       return result;
                   });
