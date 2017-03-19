@@ -9,8 +9,8 @@ module.exports = {
 
         no_router_found_at_channel:{code:"009901",msg: "路由结果为空--无可用渠道"},
         no_router_found_at_parent_channel:{code:"009902",msg: "路由结果为空--父渠道已关闭"},
-        no_router_found_at_fund:{code:"009910",msg: "路由结果为空--无渠道匹配资金源"},
-        "000201": "系统业务异常-lllll"
+        no_router_found_at_quota:{code:"009910",msg: "路由结果为空--金额范围无匹配"},
+        no_router_found_at_fund:{code:"009910",msg: "路由结果为空--无渠道匹配资金源"}
     },
     collect: {
         paramIsNull: {code: "010100", msg: "参数不全-请求参数为空"},

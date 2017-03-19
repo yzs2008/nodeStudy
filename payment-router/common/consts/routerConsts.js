@@ -15,6 +15,11 @@ module.exports = {
         precondition: "precondition",
         priority: "priority",
         postcondition: "postcondition"
+    },
+
+    busiType:{
+        forCorporate:"11",
+        forIndividual:"10"
     }
 
 };

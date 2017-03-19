@@ -15,18 +15,13 @@ module.exports = {
                   });
     },
     getParentChannelStatus: function (parentList) {
-        let queryStr = "select * from router_channel where channel_id in (?)";
+        let queryStr = "select * from router_channel where channel_id in (?) and status = 1";
         let paramObjs = [parentList];
         return dao.queryList(queryStr, paramObjs)
                   .then(function (data) {
                       let result = [];
                       for (let i=0;i<data.length;i++ ) {
-                          let row = data[i];
-                          let item = {};
-                          item.parentChannelId = row.channel_id;
-                          item.parentChannelName = row.channel_name;
-                          item.status = row.status;
-                          result.push(item);
+                          result.push(data[i].channel_id);
                       }
                       return result;
                   });

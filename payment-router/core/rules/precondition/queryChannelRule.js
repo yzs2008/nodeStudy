@@ -42,5 +42,14 @@ let selectParentStatus = function (routerList) {
 };
 
 let filterByParentStatus = function (routerList, parentList) {
-    logger.info('get access');
+    let result = [];
+    if (commonUtil.isEmptyArray(parentList)) {
+        return result;
+    }
+    for (let i = 0; i < routerList.length; i++) {
+        if (parentList.indexOf(routerList[i].parent) != -1) {
+            result.push(routerList[i]);
+        }
+    }
+    return result;
 };
