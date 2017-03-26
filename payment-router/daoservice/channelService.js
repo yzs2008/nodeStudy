@@ -1,30 +1,49 @@
 let dao = require('./mysqlService');
 let logger = require('../common/logger')('channelService');
+let redisClient = require('../common/wrapper/redisWrapper');
+let commonUtil = require('../common/utils/commonUtil');
 
 module.exports = {
     getChannelByInstCode: function (transType, instCode) {
         let queryStr = "select * from router_channel where product_type = ? and inst_code = ? and status = 1";
         let paramObjs = [transType, instCode];
-        return dao.queryList(queryStr, paramObjs)
-                  .then(function (data) {
-                      let result = [];
-                      for (let i = 0; i < data.length; i++) {
-                          result.push(copyField(data[i]));
-                      }
-                      return result;
-                  });
+
+        let redisKey = 'getChannelByInstCode_' + transType + '_' + instCode;
+        return redisClient.get(redisKey).then(function (cacheResult) {
+            if (commonUtil.isEmptyObj(cacheResult)) {
+                return dao.queryList(queryStr, paramObjs)
+                          .then(function (data) {
+                              let result = [];
+                              for (let i = 0; i < data.length; i++) {
+                                  result.push(copyField(data[i]));
+                              }
+                              logger.info('cache missed.');
+                              redisClient.set(redisKey, JSON.stringify(result));
+                              return result;
+                          });
+            }
+            logger.info('cache hited.');
+            return JSON.parse(cacheResult);
+        });
     },
     getParentChannelStatus: function (parentList) {
         let queryStr = "select * from router_channel where channel_id in (?) and status = 1";
         let paramObjs = [parentList];
-        return dao.queryList(queryStr, paramObjs)
-                  .then(function (data) {
-                      let result = [];
-                      for (let i=0;i<data.length;i++ ) {
-                          result.push(data[i].channel_id);
-                      }
-                      return result;
-                  });
+        let redisKey = 'getParentChannelStatus_' + JSON.stringify(parentList);
+        return redisClient.get(redisKey).then(function (cacheResult) {
+            if (commonUtil.isEmptyObj(cacheResult)) {
+                return dao.queryList(queryStr, paramObjs)
+                          .then(function (data) {
+                              let result = [];
+                              for (let i = 0; i < data.length; i++) {
+                                  result.push(data[i].channel_id);
+                              }
+                              redisClient.set(redisKey, JSON.stringify(result));
+                              return result;
+                          });
+            }
+            return JSON.parse(cacheResult);
+        });
     }
 };
 
