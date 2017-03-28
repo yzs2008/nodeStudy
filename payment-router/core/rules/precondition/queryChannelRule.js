@@ -31,7 +31,7 @@ module.exports = function (request, routerInfo) {
 let selectParentStatus = function (routerList) {
     let parentSet = [];
     for (let i = 0; i < routerList.length; i++) {
-        var item = routerList[i];
+        let item = routerList[i];
         if (parentSet.indexOf(item.parent) != -1) {
             continue;
         }
