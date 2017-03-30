@@ -30,7 +30,7 @@ module.exports = {
 
 let copyField = function (row) {
     let item = {};
-    item.parent = row.channel_id;
+    item.channel = row.channel_id;
     item.fund = row.fund_id;
     item.productType = row.product_type;
     item.account = row.account_no;

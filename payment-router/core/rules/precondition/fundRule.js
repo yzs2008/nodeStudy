@@ -13,7 +13,8 @@ module.exports = function (request, routerInfo) {
                               logger.error('路由结果为空', returnCode.router.no_router_found_at_fund);
                               throw returnCode.router.no_router_found_at_fund;
                           }
-                          return parent.nextRule.doRule(request, filterByFund(routerInfo, fundResult));
+                          let fundChannelList = getFundChannelArray(fundResult);
+                          return parent.nextRule.doRule(request, filterByFund(routerInfo, fundChannelList));
                       });
 };
 
@@ -29,13 +30,21 @@ let getParentChannelList = function (routerInfo) {
     return parentSet;
 };
 
-let filterByFund = function (routerInfo, fundResult) {
+let filterByFund = function (routerInfo, fundChannelList) {
     let routerList = [];
     for (let i = 0; i < routerInfo.length; i++) {
         let item = routerInfo[i];
-        if (fundResult.indexOf(item.parent) != -1) {
-            routerList.push(item.parent);
+        if (fundChannelList.indexOf(item.parent) != -1) {
+            routerList.push(item);
         }
     }
     return routerList;
+};
+
+let getFundChannelArray = function (fundResult) {
+    let fundChannelList = [];
+    for (let i = 0; i < fundResult.length; i++) {
+        fundChannelList.push(fundResult[i].channel);
+    }
+    return fundChannelList;
 };
